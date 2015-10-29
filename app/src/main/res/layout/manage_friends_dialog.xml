@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/llcoreid"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_gravity="center"
+        android:background="#ffffff"
+        android:id="@+id/llid">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="62dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Manage Friends"
+                android:id="@+id/manageFriendsTv"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:gravity="top|center"
+                android:id="@+id/tableRow">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/addFriendsIb"
+                    android:src="@drawable/add_user_icon"
+                    android:layout_gravity="center"
+                    android:background="#ffffff" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center"
+                android:id="@+id/tableRow2"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/space">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/removeFriendsIb"
+                    android:background="#ffffff"
+                    android:clickable="true"
+                    android:src="@drawable/rem_user_icon"
+                    android:layout_gravity="center_horizontal" />
+            </TableRow>
+
+            <Space
+                android:layout_width="fill_parent"
+                android:layout_height="40px"
+                android:layout_below="@+id/tableRow"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/space" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
