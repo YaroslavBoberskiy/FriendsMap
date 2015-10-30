@@ -8,5 +8,15 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/coreListView" />
+        android:id="@+id/coreListView"
+        android:layout_above="@+id/addPersonButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Person"
+        android:id="@+id/addPersonButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#c6ff99" />
 </RelativeLayout>

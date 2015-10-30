@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,21 +35,21 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             "Dolly Buffington", "Erlinda Limon", "Sharonda Russ", "Erline Ludwig", "Jaleesa Pinson"};
 
     private final boolean[] selectedPersons = {false, false, false,
-            false, false, false, false,
             false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false,
-            false, false, false};
+            false, false, false, false, false, false, false};
 
     private ArrayList<String> personNamesList = new ArrayList<String>();
     private ArrayList<String> friendsNamesList = new ArrayList<String>();
     private List<PersonsEntry> entries = new ArrayList<PersonsEntry>();
     private String friendsListString = null;
-    EntryAdapter EntryAdapter;
-
-    AlertDialog.Builder builder;
+    private EntryAdapter EntryAdapter;
+    private LayoutInflater li;
+    private AlertDialog.Builder builder;
+    private View rootElement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_main);
 
         final ListView personsEntryListView = (ListView) findViewById(R.id.coreListView);
+        final Button addPersonButton = (Button) findViewById(R.id.addPersonButton);
         personsEntryListView.setItemsCanFocus(false);
         personsEntryListView.setLongClickable(true);
 
@@ -66,6 +68,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         personsEntryListView.setOnItemLongClickListener(this);
         personsEntryListView.setOnItemClickListener(this);
+        addPersonButton.setOnClickListener(this);
     }
 
     private void addNamesToArrList() {
@@ -136,20 +139,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getApplicationContext(), "short clicked pos: " + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "custom dialog +/- friends creation", Toast.LENGTH_SHORT).show();
         //Log.i("click!", "click!");
-        LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rootElement = li.inflate(R.layout.manage_friends_dialog, null);
+        li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        rootElement = li.inflate(R.layout.manage_friends_dialog, null);
         ImageButton addFriends = (ImageButton) rootElement.findViewById(R.id.addFriendsIb);
         ImageButton removeFriends = (ImageButton) rootElement.findViewById(R.id.removeFriendsIb);
-
         addFriends.setImageResource(R.drawable.add_user_icon);
         removeFriends.setImageResource(R.drawable.rem_user_icon);
-
         addFriends.setOnClickListener(this);
         removeFriends.setOnClickListener(this);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add or Remove Friends");
         builder.setView(rootElement);
         builder.create().show();
     }
@@ -157,23 +158,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getApplicationContext(), "long clicked pos: " + position, Toast.LENGTH_SHORT).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this);
         builder.setTitle("Remove friend dialog");
         builder.setIcon(R.drawable.a38);
         TextView tv = (TextView) view.findViewById(R.id.personName);
-        builder.setMessage("Do you really want to delete "+ tv.getText().toString() + " from the list?");
+        builder.setMessage("Do you really want to delete " + tv.getText().toString() + " from the list?");
         builder.setPositiveButton("Yes", this);
         builder.setNegativeButton("No", this);
-
-//        builder.setPositiveButton(android.R.string.ok, this);
-//        builder.setNegativeButton(android.R.string.no, this);
-//        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         AlertDialog dialog = builder.create();
         dialog.show();
         return true;
@@ -193,6 +184,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 Toast.makeText(getApplicationContext(), "Ok, let's stay here...", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
                 break;
             default:
                 Toast.makeText(getApplicationContext(), namesOfPredefinedPersons[which], Toast.LENGTH_SHORT).show();
@@ -208,10 +200,68 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.addFriendsIb:
-                Toast.makeText(getApplicationContext(), "Add friends...", Toast.LENGTH_SHORT).show();
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("Adding friends");
+                builder.setMultiChoiceItems(namesOfPredefinedPersons, selectedPersons,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which, boolean isChecked) {
+                                selectedPersons[which] = isChecked;
+                            }
+                        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        StringBuilder state = new StringBuilder();
+                        Toast.makeText(getApplicationContext(),
+                                "ADD...ADD...ADD", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create().show();
                 break;
             case R.id.removeFriendsIb:
-                Toast.makeText(getApplicationContext(), "Remove friends...", Toast.LENGTH_SHORT).show();
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("Removing friends");
+                builder.setMultiChoiceItems(namesOfPredefinedPersons, selectedPersons,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which, boolean isChecked) {
+                                selectedPersons[which] = isChecked;
+                            }
+                        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        StringBuilder state = new StringBuilder();
+                        Toast.makeText(getApplicationContext(),
+                                "REMOVE...REMOVE...REMOVE", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create().show();
+                break;
+            case R.id.addPersonButton:
+                Toast.makeText(getApplicationContext(), "add person custom dialog creation", Toast.LENGTH_SHORT).show();
+                li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                rootElement = li.inflate(R.layout.add_person_dialog, null);
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("Enter person name: ");
+                builder.setView(rootElement);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getApplicationContext(), "add person in custom dialog!!!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getApplicationContext(), "cancel action!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.create().show();
                 break;
         }
     }
